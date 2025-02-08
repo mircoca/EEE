@@ -13,23 +13,16 @@
     <title>Multimetro (versione 0.9, 08/02/2025)</title> 
 
     <style>
-<!--
       body{
         text-align:center;
         width:100%;
         height:100%;
         background-color:#dff1c6;
       }
--->
-	  body {
-		height: 100vh;
-		margin: 0;
-		padding: 0;
-	  }
       p{
         text-align:center;
       }
-    </style>    
+    </style>   
 
     <script>
 	  var
@@ -210,6 +203,7 @@
 		else{
 		  voltage = NaN;
 		}
+		//document.getElementById('test').innerHTML = "node0="+node[0]+" / node1="+node[1]+" / node2="+node[2]+" / node3="+node[3]+" / node4="+node[4]+" / node5="+node[5]+" / voltage="+voltage;
 	  }
 	  
 	  
@@ -243,20 +237,41 @@
 	  
 	  
 	  function newCircuit(){
-	
 		resetCircuit();
 		showResult = 0;
-		
 		randomSwitches();
 		updateSwitches();
-				
 		randomProbes();
 		updateProbes();
-		
 		calcResult();
-		document.getElementById('test').innerHTML = "node0="+node[0]+" / node1="+node[1]+" / node2="+node[2]+" / node3="+node[3]+" / node4="+node[4]+" / node5="+node[5]+" / voltage="+voltage;
 		updateTesterView();
-				
+	  }
+
+
+	  function newCircuit2(){
+		resetCircuit();
+		showResult = 0;
+		do{
+		  randomSwitches();
+		  randomProbes();
+		  calcResult();
+		} while (isNaN(node[p])||isNaN(node[m]));
+		updateSwitches();
+		updateProbes();
+		updateTesterView();
+	  }
+
+	  function newCircuit3(){
+		resetCircuit();
+		showResult = 0;
+		do{
+		  randomSwitches();
+		  randomProbes();
+		  calcResult();
+		} while (isNaN(node[p])||isNaN(node[m])||(voltage==0));
+		updateSwitches();
+		updateProbes();
+		updateTesterView();
 	  }
 	  
 	  
@@ -350,10 +365,10 @@
   <body onLoad="initScene();">
 
     <h1> IL MULTIMETRO </h1>
-	
+	<!--
 	<p id="test">debug...</p>
-    
-    <p>
+    -->
+<p>
 <!-- 
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -369,6 +384,7 @@
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="multimetro.svg">
+   width="90%" 
 -->
   <svg id="circuito" width="90%" viewBox="0 0 1266.3728 1382.6553">
   <defs
@@ -490,9 +506,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.33589188"
-     inkscape:cx="-736.33306"
-     inkscape:cy="571.63062"
+     inkscape:zoom="0.67178375"
+     inkscape:cx="411.85817"
+     inkscape:cy="774.45864"
      inkscape:document-units="px"
      inkscape:current-layer="layer1-9"
      showgrid="false"
@@ -1972,8 +1988,9 @@
            xml:space="preserve"
            x="571.57727"
            y="603.05048"
-           style="font-size:44.61962509px;font-style:normal;font-weight:normal;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
-           id="testerText">_____V</text>
+           style="font-size:44.61962509px;font-style:normal;font-weight:bold;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New;-inkscape-font-specification:Courier New Bold;font-stretch:normal;font-variant:normal;writing-mode:lr;line-height:125%"
+           id="testerText"
+           sodipodi:linespacing="125%">_____V</text>
         <text
            xml:space="preserve"
            x="583.71173"
@@ -2560,12 +2577,12 @@
          style="fill:none;stroke:#dc2000;stroke-width:8;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          inkscape:label="#path_plus_3_lt"
-         sodipodi:nodetypes="csssssssc"
+         sodipodi:nodetypes="cssssccc"
          inkscape:connector-curvature="0"
-         inkscape:original-d="m 741.45197,983.67181 c -7.55224,86.02269 -51.47056,152.00439 -123.23861,187.88839 -60.77866,30.3893 -119.34819,10.569 -177.78685,-4.0406 C 251.16228,1120.2035 205.21433,1036.7498 268.70058,846.29106 307.79506,729.00762 508.58051,638.09684 600.03061,569.50927 c 43.81967,-32.86476 91.24725,-86.36324 125.25892,-137.38075 17.19004,-25.78506 24.70937,-67.36864 44.44671,-96.97464 13.0353,-19.55296 -72.9797,-302.027972 -84.34774,-324.764047 -15.15236,-30.304735 -9.56098,16.858994 -35.442,29.7995"
+         inkscape:original-d="m 741.45197,983.67181 c -7.55224,86.02269 -51.47056,152.00439 -123.23861,187.88839 -60.77866,30.3893 -119.34819,10.569 -177.78685,-4.0406 C 251.16228,1120.2035 205.21433,1036.7498 268.70058,846.29106 307.79506,729.00762 508.58051,638.09684 600.03061,569.50927 643.85028,536.64451 799.94378,219.66839 833.95545,168.65088 913.68852,43.287469 742.95681,141.94807 685.3885,10.389833 c -15.15236,-30.304735 -9.56098,16.858994 -35.442,29.7995"
          inkscape:path-effect="#path-effect7046"
          id="path_plus_3_lt"
-         d="m 741.45197,983.67181 c 1.19263,39.86309 -10.14817,80.01049 -32.02126,113.35799 -21.8731,33.3475 -54.17904,59.7435 -91.21735,74.5304 -56.34315,22.494 -121.06623,17.4838 -177.78685,-4.0406 -62.81162,-23.8359 -118.46156,-68.2356 -151.52439,-126.7189 -33.06282,-58.48335 -42.20357,-131.03241 -20.20154,-194.50964 12.03153,-34.7117 32.78692,-66.00976 57.85962,-92.86156 25.07271,-26.85181 54.42069,-49.42275 85.16294,-69.53677 61.4845,-40.22805 128.95934,-71.06557 188.30747,-114.38346 50.4456,-36.81999 94.79805,-82.85914 125.25892,-137.38075 17.35116,-31.05666 30.02127,-64.45564 44.44671,-96.97464 14.88323,-33.55098 31.69646,-66.29817 44.3707,-100.7444 C 826.78118,199.96326 835.2879,163.33463 832.713,126.72113 830.1381,90.107623 815.52798,53.382477 787.93315,29.181149 774.13574,17.080484 757.29316,8.329038 739.29073,4.7643295 721.2883,1.1996209 702.15695,2.9323576 685.3885,10.389833 c -14.29002,6.355237 -26.7277,16.812793 -35.442,29.7995"
+         d="m 741.45197,983.67181 c 1.16023,39.85729 -10.19355,79.98869 -32.06296,113.33059 -21.86941,33.3419 -54.15553,59.7435 -91.17565,74.5578 -56.33493,22.5435 -121.10111,17.6056 -177.78685,-4.0406 C 377.77624,1143.5957 322.45035,1099.004 289.55762,1040.5619 256.6649,982.11985 247.43511,909.89286 268.70058,846.29106 292.04602,776.46841 348.60296,722.55034 409.9196,681.80133 471.23624,641.05231 538.92146,610.56879 600.03061,569.50927 666.91554,524.56898 725.67785,466.71115 767.65032,397.92498 809.62278,329.13882 834.37893,249.23031 833.95545,168.65088 833.72993,125.73998 825.62125,80.979292 799.30675,47.083226 786.1495,30.135193 768.54356,16.385474 748.29681,9.2849006 728.05006,2.1843268 705.15056,2.034584 685.3885,10.389833 c -14.4308,6.101233 -26.95376,16.630492 -35.442,29.7995"
          style="fill:none;stroke:#dc2000;stroke-width:8;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
       <path
          sodipodi:nodetypes="csssc"
@@ -2615,9 +2632,19 @@
     </g>
   </g>
 </svg>
-  <p>
-	<button id="butNewCircuit" style="font-size:170%;height:70px;width:150px" onclick="newCircuit()"> NUOVO </button>
   </p>
-
+  <p>  
+	<button id="butNewCircuit" style="font-size:170%;height:70px;width:150px" onclick="newCircuit()"> Casuale (1) </button>
+	<button id="butNewCircuit" style="font-size:170%;height:70px;width:150px" onclick="newCircuit2()"> Casuale (2) </button>
+	<button id="butNewCircuit" style="font-size:170%;height:70px;width:150px" onclick="newCircuit3()"> Casuale (3) </button>
+  </p>
+  <p>
+	<div>
+	  <i>Copyright (C) IIS Cattaneo Dall'Aglio, 2025</i>
+	</div>
+	<div>
+	  <i>Indirizzo Elettronica ed Elettrotecnica</i>
+	</div>
+  </p>
   </body>
 </html>

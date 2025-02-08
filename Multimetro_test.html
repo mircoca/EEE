@@ -19,6 +19,16 @@
     </style>    
 
     <script>
+	  var
+		s1 = 0;
+		s2 = 0;
+		s3 = 0;
+		s4 = 0;
+		m  = 0;
+		p  = 0;
+		voltage = 0;
+		node = [0, NaN, NaN, NaN, NaN, 9];
+		showResult = false;
 	
       function clearProbes(){
 		document.getElementById("g_probe0").style.visibility = "hidden";
@@ -51,6 +61,14 @@
 	  }
     
       function resetCircuit(){
+		s1 = 0;
+		s2 = 0;
+		s3 = 0;
+		s4 = 0;
+		m  = 0;
+		p  = 0;
+		node = [0, NaN, NaN, NaN, NaN, 9];
+
 		clearProbes();
 		clearCables();
 
@@ -65,37 +83,63 @@
 		document.getElementById("sw4_off").style.visibility = "visible";
 	  }
 	  
+	  
+	  function calcResult(){
+	  
+	    // Potenziale nodo 0
+		node[0] = 0;
+		// Potenziale nodo 1
+		if (s3){node[1]=0;} else if (s1 && !s3){node[1]=9;}
+		// Potenziale nodo 2
+		if ((s3 && s4)||(!s1 && s2 && s3)){node[2]=0;}
+		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[2]=9;}
+		else if (s1 && s2 && s3 && !s4){node[2]=4.5;}
+		// Potenziale nodo 3
+		if ((!s1 && s2 && s3)||(!s2 && s3 && s4)){node[3]=0;}
+		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[3]=9;}
+		else if (s1 && s2 && s3 && !s4){node[3]=4.5;}
+		else if (s1 && s2 && s3 && s4){node[3]=3;}
+		// Potenziale nodo 4
+		if (!s1 && s3){node[4]=0;}
+		else if (s1 && !s3){node[4]=9;}
+		else if ((s1 && !s2 && s3)||(s1 && s3 && !s4)){node[4]=4.5;}
+		else if (s1 && s2 && s3 && s4){node[4]=3;}
+		// Potenziale nodo 5
+		node[5] = 9;
+		if ((p>=0)&&(p<=5)&&(m>=0)&&(m<=5)){
+		  voltage = node[p]-node[m];	
+		}
+		else{
+		  voltage = NaN;
+		}
+	  }
+	  
+	  
+	  function updateTesterView(){
+	    var
+		  val = 0;
+		if (!isNaN(voltage)){val=voltage;}
+	    if (showResult){
+		  document.getElementById("testerText").textContent = ("    " + val).substr(-4,4)+" V"; //"  12 V";
+		}
+		else{
+		  document.getElementById("testerText").textContent = "_____V";
+		}
+	  }
+	  
+	  
 	  function newCircuit(){
-		var offon = ["hidden", "visible"];
-		var onoff = ["visible", "hidden"];
-		var s1, s2, s3, s4;
-		var m;
-		var p;
-		var node = [0, NaN, NaN, NaN, NaN, 9];
+		var
+		  offon = ["hidden", "visible"];
+		  onoff = ["visible", "hidden"];
+		
+		resetCircuit();
 		
 		s1 = Math.floor(Math.random()*2);
 		s2 = Math.floor(Math.random()*2);
 		s3 = Math.floor(Math.random()*2);
 		s4 = Math.floor(Math.random()*2);
 		
-		if (s3){node[1]=0;} else if (s1 && !s3){node[1]=9;}
-		
-		if ((s3 && s4)||(!s1 && s2 && s3)){node[2]=0;}
-		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[2]=9;}
-		else if (s1 && s2 && s3 && !s4){node[2]=4.5;}
-		
-		if ((!s1 && s2 && s3)||(!s2 && s3 && s4)){node[3]=0;}
-		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[3]=9;}
-		else if (s1 && s2 && s3 && !s4){node[3]=4.5;}
-		else if (s1 && s2 && s3 && s4){node[3]=3;}
-		
-		if (!s1 && s3){node[4]=0;}
-		else if (s1 && !s3){node[4]=9;}
-		else if ((s1 && !s2 && s3)||(s1 && s3 && !s4)){node[4]=4.5;}
-		else if (s1 && s2 && s3 && s4){node[4]=3;}
-		
-		document.getElementById('test').innerHTML = "node0="+node[0]+" / node1="+node[1]+" / node2="+node[2]+" / node3="+node[3]+" / node4="+node[4]+" / node5="+node[5];
-				
 		document.getElementById("sw1_on").style.visibility = offon[s1];
 		document.getElementById("sw1_off").style.visibility = onoff[s1];
 		
@@ -130,7 +174,16 @@
 		  document.getElementById("path_plus_"+p.toString()+"_lt").style.visibility = "visible";
 		}
 
+		calcResult();
+		document.getElementById('test').innerHTML = "node0="+node[0]+" / node1="+node[1]+" / node2="+node[2]+" / node3="+node[3]+" / node4="+node[4]+" / node5="+node[5]+" / voltage="+voltage;
+		updateTesterView();
+				
 	  }
+	  
+	function testerClick(){
+	  showResult = !showResult;
+	  updateTesterView();
+	}
 	  
     </script>
 
@@ -262,11 +315,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.9899495"
-     inkscape:cx="439.3318"
-     inkscape:cy="950.00501"
+     inkscape:zoom="0.67178375"
+     inkscape:cx="993.98607"
+     inkscape:cy="433.71206"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1-9"
+     inkscape:current-layer="gtester"
      showgrid="false"
      inkscape:window-width="1853"
      inkscape:window-height="925"
@@ -501,7 +554,8 @@
       </g>
       <g
          transform="translate(31.428572,114.28572)"
-         id="g5866">
+         id="gtester"
+         onclick="testerClick()">
         <path
            inkscape:connector-curvature="0"
            style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
@@ -1672,7 +1726,7 @@
            x="571.57727"
            y="603.05048"
            style="font-size:44.61962509px;font-style:normal;font-weight:normal;text-align:start;text-anchor:start;fill:#000000;font-family:Courier New"
-           id="text4756">_____V</text>
+           id="testerText">_____V</text>
         <text
            xml:space="preserve"
            x="583.71173"
@@ -2284,8 +2338,8 @@
          d="m 742.96719,980.64135 c -2.10102,21.84965 5.43583,44.45285 20.22959,60.66915 14.79376,16.2162 36.61208,25.7908 58.56232,25.6989 13.26439,-0.055 26.42839,-3.4989 38.32367,-9.3683 11.89528,-5.8693 22.54134,-14.1261 31.67523,-23.7448 18.26777,-19.2374 30.31352,-43.55765 39.60264,-68.40722 29.46092,-78.81169 32.74748,-169.04491 -0.62217,-246.28282 -16.68483,-38.61895 -42.30194,-73.51744 -75.01697,-99.96615 -32.71502,-26.4487 -72.55482,-44.28199 -114.26953,-49.73084 -65.13626,-8.50822 -132.50764,13.89507 -183.64268,55.13012 -51.13505,41.23504 -86.56175,100.09092 -105.26095,163.06283 -8.41457,28.33712 -13.63406,57.61642 -23.52467,85.47271 -9.89061,27.8563 -25.16767,54.90814 -49.20631,72.11108 -17.64362,12.62643 -40.17154,19.30841 -61.4626,15.13527 -10.64553,-2.08658 -20.80825,-6.85946 -28.93562,-14.04464 -8.12738,-7.18519 -14.15811,-16.80322 -16.67796,-27.35459 -2.21129,-9.25934 -1.71188,-19.06134 0.75296,-28.25643 2.46485,-9.19509 6.84822,-17.80629 12.25516,-25.64147 10.81389,-15.67036 25.52492,-28.14742 39.51982,-41.05645 31.34753,-28.91527 60.26046,-61.44923 78.60548,-99.94885 18.34502,-38.49962 25.3253,-83.69323 12.30825,-124.30501 -4.27571,-13.33974 -10.63027,-26.01092 -18.76397,-37.41589"
          style="fill:none;stroke:#dc2000;stroke-width:8;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     </g>
-  </g>
-</svg>
+</g>
+  </svg>
   <p>
 	<button id="butNewCircuit" style="font-size:170%;height:70px;width:150px" onclick="newCircuit()"> NUOVO </button>
   </p>

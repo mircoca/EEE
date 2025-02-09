@@ -3,14 +3,14 @@
   Copyright (C) IIS Cattaneo Dall'Aglio, 2025 
   IIS Cattaneo Dall'Aglio, Castelnovo ne' Monti (RE)
   Corso di Elettronica, Elettrotecnica e Automazione
-  Casini Mirco
+  Mirco Casini
 -->
 
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width"/>
-    <title>Multimetro (versione 0.9, 08/02/2025)</title> 
+    <title>Multimetro (versione 1.0, 09/02/2025)</title> 
 
     <style>
       body{
@@ -26,7 +26,8 @@
 
     <script>
 	  var
-	    Battery = 12;
+	    Battery = [3, 9, 12, 24];
+		batIdx = 2;
 		s1 = 0;
 		s2 = 0;
 		s3 = 0;
@@ -34,7 +35,7 @@
 		m  = -1;
 		p  = -1;
 		voltage = 0;
-		node = [0, NaN, NaN, NaN, NaN, 9];
+		node = [0, NaN, NaN, NaN, NaN, Battery[batIdx]];
 		showResult = false;
 		selectedProbe = -1;
 
@@ -143,6 +144,9 @@
 		document.getElementById("sw4_off").style.visibility = onoff[s4];
 	  }
     
+	  function updateBattery(){
+	    document.getElementById("batteryText").textContent = Battery[batIdx].toString()+" V";
+	  }
 	
       function resetCircuit(){
 		s1 = 0;
@@ -151,7 +155,8 @@
 		s4 = 0;
 		m  = -1;
 		p  = -1;
-		node = [0, NaN, NaN, NaN, NaN, 9];
+		batIdx = 2;
+		node = [0, NaN, NaN, NaN, NaN, Battery[batIdx]];
 		
 		updateSwitches();
 		clearProbes();
@@ -170,33 +175,36 @@
 		document.getElementById("boxNode3").setAttribute("style", "color:#000000;fill:#dff1c6;fill-opacity:0;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate");
 		document.getElementById("boxNode4").setAttribute("style", "color:#000000;fill:#dff1c6;fill-opacity:0;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate");
 		document.getElementById("boxNode5").setAttribute("style", "color:#000000;fill:#dff1c6;fill-opacity:0;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate");
-		document.getElementById("batteryText").textContent = Battery.toString()+" V";
+		document.getElementById("boxBattery").setAttribute("style", "color:#000000;fill:#dff1c6;fill-opacity:0;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate");
+		document.getElementById("batteryText").textContent = Battery[batIdx].toString()+" V";
 	  }
 	  
 	  
 	  function calcResult(){
+	    var
+		  bat = Battery[batIdx];
 	    // Inizializzazione potenziali
-		node = [0, NaN, NaN, NaN, NaN, Battery];
+		node = [0, NaN, NaN, NaN, NaN, bat];
 	    // Potenziale nodo 0
 		node[0] = 0;
 		// Potenziale nodo 1
-		if (s3){node[1]=0;} else if (s1 && !s3){node[1]=Battery;}
+		if (s3){node[1]=0;} else if (s1 && !s3){node[1]=bat;}
 		// Potenziale nodo 2
 		if ((s3 && s4)||(!s1 && s2 && s3)){node[2]=0;}
-		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[2]=Battery;}
-		else if (s1 && s2 && s3 && !s4){node[2]=Battery/2;}
+		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[2]=bat;}
+		else if (s1 && s2 && s3 && !s4){node[2]=bat/2;}
 		// Potenziale nodo 3
 		if ((!s1 && s2 && s3)||(!s2 && s3 && s4)){node[3]=0;}
-		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[3]=Battery;}
-		else if (s1 && s2 && s3 && !s4){node[3]=Battery/2;}
-		else if (s1 && s2 && s3 && s4){node[3]=Battery/3;}
+		else if ((s1 && s2 && !s3) || (s1 && !s3 && s4)){node[3]=bat;}
+		else if (s1 && s2 && s3 && !s4){node[3]=bat/2;}
+		else if (s1 && s2 && s3 && s4){node[3]=bat/3;}
 		// Potenziale nodo 4
 		if (!s1 && s3){node[4]=0;}
-		else if (s1 && !s3){node[4]=Battery;}
-		else if ((s1 && !s2 && s3)||(s1 && s3 && !s4)){node[4]=Battery/2;}
-		else if (s1 && s2 && s3 && s4){node[4]=Battery/3;}
+		else if (s1 && !s3){node[4]=bat;}
+		else if ((s1 && !s2 && s3)||(s1 && s3 && !s4)){node[4]=bat/2;}
+		else if (s1 && s2 && s3 && s4){node[4]=bat/3;}
 		// Potenziale nodo 5
-		node[5] = Battery;
+		node[5] = bat;
 		if ((p>=0) && (p<=5) && (m>=0) && (m<=5)){
 		  voltage = node[p]-node[m];	
 		}
@@ -236,9 +244,16 @@
 	  }
 	  
 	  
+	  function randomBattery(){
+	    batIdx = Math.floor(Math.random()*Battery.length);
+	  }
+	  
+	  
 	  function newCircuit(){
 		resetCircuit();
 		showResult = 0;
+		randomBattery();
+		updateBattery();
 		randomSwitches();
 		updateSwitches();
 		randomProbes();
@@ -251,6 +266,8 @@
 	  function newCircuit2(){
 		resetCircuit();
 		showResult = 0;
+		randomBattery();
+		updateBattery();
 		do{
 		  randomSwitches();
 		  randomProbes();
@@ -264,6 +281,8 @@
 	  function newCircuit3(){
 		resetCircuit();
 		showResult = 0;
+		randomBattery();
+		updateBattery();
 		do{
 		  randomSwitches();
 		  randomProbes();
@@ -357,7 +376,15 @@
 	    setProbeStatus(m, (selectedProbe == m) ? 12 : 2);
 	  }
 	}
-	  
+	 
+	
+	function batteryClick(){
+	  batIdx = (batIdx < (Battery.length-1)) ? batIdx+1 : 0;
+	  updateBattery();
+	  calcResult();
+	  updateTesterView();			
+	}
+	 
     </script>
 
   </head>
@@ -394,7 +421,6 @@
        id="path-effect5833"
        is_visible="true" />
     <linearGradient
-       inkscape:collect="always"
        id="linearGradient5648"
        osb:paint="gradient">
       <stop
@@ -506,9 +532,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.67178375"
-     inkscape:cx="411.85817"
-     inkscape:cy="774.45864"
+     inkscape:zoom="2.687135"
+     inkscape:cx="248.08767"
+     inkscape:cy="897.98549"
      inkscape:document-units="px"
      inkscape:current-layer="layer1-9"
      showgrid="false"
@@ -542,6 +568,13 @@
        transform="translate(52.589472,-129.5837)"
        id="layer1-9"
        inkscape:label="Livello 1">
+      <path
+         inkscape:connector-curvature="0"
+         style="color:#000000;fill:#dff1c6;fill-opacity:1;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+         d="m -238.7894,270.58177 0,20.60149 0,13.90308 0,20.6015 26.96875,0 23.875,0 2.3125,0 24.65625,0 2.3125,0 23.875,0 26.96875,0 0,-20.6015 0,-13.90308 0,-20.60149 -26.96875,0 -23.875,0 -2.3125,0 -24.65625,0 -2.3125,0 -23.875,0 -26.96875,0 z"
+         id="boxBattery"
+         inkscape:label="#boxBattery"
+         onclick="batteryClick()" />
       <path
          style="color:#000000;fill:#dff1c6;fill-opacity:1;stroke:none;stroke-width:8;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          d="M 59.78125 303.8125 L 59.78125 358.5 L 59.78125 395.40625 L 59.78125 450.09375 L 86.75 450.09375 L 110.625 450.09375 L 112.9375 450.09375 L 137.59375 450.09375 L 139.90625 450.09375 L 163.78125 450.09375 L 190.75 450.09375 L 190.75 395.40625 L 190.75 358.5 L 190.75 303.8125 L 163.78125 303.8125 L 139.90625 303.8125 L 137.59375 303.8125 L 112.9375 303.8125 L 110.625 303.8125 L 86.75 303.8125 L 59.78125 303.8125 z "
@@ -608,16 +641,19 @@
          transform="translate(-291.49015,-180.82066)"
          id="boxSw1"
          onclick="sw1Click()" />
-      <path
-         id="path4202"
-         d="m -236.50563,285.52638 0,-4.74262 0,-4.74262 126.40121,0 0,4.74262 0,4.74262 -126.40121,0 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-         inkscape:connector-curvature="0" />
-      <path
-         id="path4204"
-         d="m -204.90532,320.22847 0,-4.74262 0,-4.74262 63.2006,0 0,4.74262 0,4.74262 -63.2006,0 z"
-         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
-         inkscape:connector-curvature="0" />
+      <g
+         id="g3845">
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           d="m -236.50563,285.52638 0,-4.74262 0,-4.74262 126.40121,0 0,4.74262 0,4.74262 -126.40121,0 z"
+           id="path4202" />
+        <path
+           inkscape:connector-curvature="0"
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none"
+           d="m -204.90532,320.22847 0,-4.74262 0,-4.74262 63.2006,0 0,4.74262 0,4.74262 -63.2006,0 z"
+           id="path4204" />
+      </g>
       <path
          id="path4206"
          transform="translate(-291.49015,-180.82066)"
